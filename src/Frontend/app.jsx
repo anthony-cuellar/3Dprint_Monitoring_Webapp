@@ -1,15 +1,16 @@
-import React from "react";
 import { Routes, Route } from "react-router-dom";
 import Home from "./Home";
 import DetectorPage from "./DetectorPage";
+import SuccessPage from "./SuccessPage";
+import ErrorPage from "./ErrorPage";
 
 function App() {
   return (
     <Routes>
-      {/* "/" -> the main landing page */}
       <Route path="/" element={<Home />} />
-      {/* "/detect" -> the waiting/detection page */}
       <Route path="/detect" element={<DetectorPage />} />
+      <Route path="/success" element={<SuccessPage />} />
+      <Route path="/error" element={<ErrorPage />} />
     </Routes>
   );
 }
