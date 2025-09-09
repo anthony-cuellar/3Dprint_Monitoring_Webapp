@@ -47,7 +47,7 @@ function Home() {
       const newEvent =
         possibleEvents[Math.floor(Math.random() * possibleEvents.length)];
       setEvents((prev) => [newEvent, ...prev.slice(0, 4)]); // keep last 5
-    }, 5000); // every 5s
+    }, 5000);
 
     return () => clearInterval(interval);
   }, []);
@@ -66,23 +66,28 @@ function Home() {
 
       {/* Dashboard Grid */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 max-w-7xl mx-auto">
+        
         {/* Live Feed Card */}
-        <div className="bg-white p-6 rounded-xl shadow-md flex flex-col items-center relative group">
+        <div
+          className="bg-white p-6 rounded-xl shadow-md flex flex-col items-center relative group"
+          onMouseEnter={startCamera}
+          onMouseLeave={stopCamera}  // ✅ now attached to the container
+        >
           <h2 className="text-xl font-semibold text-gray-800 mb-4">
             Live Camera Feed
           </h2>
+          {/* Default Image */}
           <img
             src="/3dprinter.jpg"
             alt="3D Printer"
             className="w-full h-64 object-contain rounded-lg shadow transition-opacity duration-300 group-hover:opacity-0"
-            onMouseEnter={startCamera}
           />
+          {/* Webcam video */}
           <video
             ref={videoRef}
             autoPlay
             muted
             className="absolute top-16 inset-x-6 w-[calc(100%-3rem)] h-64 object-cover rounded-lg shadow opacity-0 group-hover:opacity-100 transition-opacity duration-300"
-            onMouseLeave={stopCamera}
           />
           <p className="text-sm text-gray-500 mt-3">Hover to activate camera</p>
         </div>
@@ -137,7 +142,9 @@ function Home() {
           </div>
           {/* Auto-updating Recent Events */}
           <div className="mt-6">
-            <h3 className="text-lg font-semibold text-gray-700 mb-2">Recent Events</h3>
+            <h3 className="text-lg font-semibold text-gray-700 mb-2">
+              Recent Events
+            </h3>
             <ul className="text-sm text-gray-600 space-y-2">
               {events.map((event, index) => (
                 <li key={index} className="flex items-center gap-2">
