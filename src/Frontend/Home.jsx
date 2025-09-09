@@ -1,5 +1,6 @@
 import { useRef, useState, useEffect } from "react";
 import { Link } from "react-router-dom";
+import { motion } from "framer-motion"; 
 import "../css/index.css";
 
 function Home() {
@@ -46,7 +47,7 @@ function Home() {
     const interval = setInterval(() => {
       const newEvent =
         possibleEvents[Math.floor(Math.random() * possibleEvents.length)];
-      setEvents((prev) => [newEvent, ...prev.slice(0, 4)]); // keep last 5
+      setEvents((prev) => [newEvent, ...prev.slice(0, 4)]);
     }, 5000);
 
     return () => clearInterval(interval);
@@ -55,34 +56,38 @@ function Home() {
   return (
     <main className="min-h-screen bg-gray-100 p-8">
       {/* Header */}
-      <header className="text-center mb-12">
+      <motion.header
+        className="text-center mb-12"
+        initial={{ opacity: 0, y: -30 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.7 }}
+      >
         <h1 className="text-4xl md:text-5xl font-extrabold text-red-600">
           3D Print Monitoring Dashboard
         </h1>
         <p className="text-gray-600 mt-3 text-lg">
           Track print status, view live feed, and monitor anomalies in real time.
         </p>
-      </header>
+      </motion.header>
 
       {/* Dashboard Grid */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 max-w-7xl mx-auto">
-        
         {/* Live Feed Card */}
-        <div
-          className="bg-white p-6 rounded-xl shadow-md flex flex-col items-center relative group"
+        <motion.div
+          className="bg-white p-6 rounded-xl shadow-md flex flex-col items-center relative group min-h-[400px]"
           onMouseEnter={startCamera}
-          onMouseLeave={stopCamera}  // ✅ now attached to the container
+          onMouseLeave={stopCamera}
+          whileHover={{ y: -5, boxShadow: "0px 8px 20px rgba(0,0,0,0.15)" }}
+          transition={{ type: "spring", stiffness: 200 }}
         >
           <h2 className="text-xl font-semibold text-gray-800 mb-4">
             Live Camera Feed
           </h2>
-          {/* Default Image */}
           <img
             src="/3dprinter.jpg"
             alt="3D Printer"
             className="w-full h-64 object-contain rounded-lg shadow transition-opacity duration-300 group-hover:opacity-0"
           />
-          {/* Webcam video */}
           <video
             ref={videoRef}
             autoPlay
@@ -90,17 +95,21 @@ function Home() {
             className="absolute top-16 inset-x-6 w-[calc(100%-3rem)] h-64 object-cover rounded-lg shadow opacity-0 group-hover:opacity-100 transition-opacity duration-300"
           />
           <p className="text-sm text-gray-500 mt-3">Hover to activate camera</p>
-        </div>
+        </motion.div>
 
         {/* Status Card */}
-        <div className="bg-white p-6 rounded-xl shadow-md flex flex-col justify-between">
+        <motion.div
+          className="bg-white p-6 rounded-xl shadow-md flex flex-col justify-between min-h-[400px]"
+          whileHover={{ y: -5, boxShadow: "0px 8px 20px rgba(0,0,0,0.15)" }}
+          transition={{ type: "spring", stiffness: 200 }}
+        >
           <div>
             <h2 className="text-xl font-semibold text-gray-800 mb-4">
               Current Print Status
             </h2>
             <div className="flex items-center gap-3 mb-3">
               <span className="flex items-center justify-center w-8 h-8 rounded-full bg-green-100">
-                <span className="text-green-600 text-lg">✔</span>
+                <span className="text-green-600 text-lg animate-pulse">●</span>
               </span>
               <p className="text-lg text-gray-700">
                 <span className="font-semibold text-green-600">Status: OK</span>
@@ -110,7 +119,7 @@ function Home() {
               No anomalies detected. Print is running smoothly and within expected parameters.
             </p>
           </div>
-          <div className="mt-6">
+          <motion.div whileHover={{ scale: 1.05 }} className="mt-6">
             <Link
               to="/detect"
               className="w-full block text-center px-6 py-3 bg-red-500 text-white text-lg font-semibold rounded-lg 
@@ -118,27 +127,33 @@ function Home() {
             >
               🚀 Start Monitoring
             </Link>
-          </div>
-        </div>
+          </motion.div>
+        </motion.div>
 
         {/* Controls / Logs Card */}
-        <div className="bg-white p-6 rounded-xl shadow-md">
+        <motion.div
+          className="bg-white p-6 rounded-xl shadow-md min-h-[400px] flex flex-col"
+          whileHover={{ y: -5, boxShadow: "0px 8px 20px rgba(0,0,0,0.15)" }}
+          transition={{ type: "spring", stiffness: 200 }}
+        >
           <h2 className="text-xl font-semibold text-gray-800 mb-4">
             Controls & Logs
           </h2>
-          <div className="space-y-4">
-            <button className="w-full px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition">
-              📜 View Print History
-            </button>
-            <button className="w-full px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition">
-              ⚠️ View Error Reports
-            </button>
-            <button className="w-full px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 transition">
-              🛠 System Health Check
-            </button>
-            <button className="w-full px-4 py-2 bg-gray-500 text-white rounded-lg hover:bg-gray-600 transition">
-              ⬇ Export Logs
-            </button>
+          <div className="space-y-4 flex-1">
+            {[
+              { label: "📜 View Print History", color: "bg-blue-500 hover:bg-blue-600" },
+              { label: "⚠️ View Error Reports", color: "bg-red-500 hover:bg-red-600" },
+              { label: "🛠 System Health Check", color: "bg-green-500 hover:bg-green-600" },
+              { label: "⬇ Export Logs", color: "bg-gray-500 hover:bg-gray-600" },
+            ].map((btn, index) => (
+              <motion.button
+                key={index}
+                whileHover={{ scale: 1.05 }}
+                className={`w-full px-4 py-2 text-white rounded-lg transition ${btn.color}`}
+              >
+                {btn.label}
+              </motion.button>
+            ))}
           </div>
           {/* Auto-updating Recent Events */}
           <div className="mt-6">
@@ -147,14 +162,20 @@ function Home() {
             </h3>
             <ul className="text-sm text-gray-600 space-y-2">
               {events.map((event, index) => (
-                <li key={index} className="flex items-center gap-2">
+                <motion.li
+                  key={index}
+                  initial={{ opacity: 0, x: -20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ duration: 0.4 }}
+                  className="flex items-center gap-2"
+                >
                   <span className="text-purple-500">✔</span>
                   {event}
-                </li>
+                </motion.li>
               ))}
             </ul>
           </div>
-        </div>
+        </motion.div>
       </div>
     </main>
   );
